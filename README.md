@@ -75,7 +75,9 @@ notebooks/        exploration only; pipelines run via the `jcd` CLI
 
 - [x] **0. Design**: [system design](docs/SYSTEM_DESIGN.md)
 - [x] **1. Foundation**: repo, tooling, CI, core catalog and counting logic with tests
-- [~] **2. Data**: ✅ audit + leakage-free grouped split ([v1 audit](reports/data/v1-coinsvision-nqdbs-v5/audit.md)) · ⏳ pull coin-vision originals, version on HF Hub
+- [x] **2. Data**: leakage-free grouped split of the 1,006 originals, versioned on the Hub as
+  [`jordan-currency-detection@v1.0`](https://huggingface.co/datasets/albarashehadeh/jordan-currency-detection)
+  ([audit](reports/data/coin-vision-v5-grouped/audit.md) · [v1 leak audit](reports/data/v1-coinsvision-nqdbs-v5/audit.md))
 - [ ] **3. Inference core**: detector protocol, ONNX and Ultralytics backends, video pipeline
 - [ ] **4. Training & evaluation**: reproducible training, counting/value metrics, model card
 - [ ] **5. Serving**: FastAPI + Gradio UI

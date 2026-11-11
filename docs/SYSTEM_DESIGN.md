@@ -94,7 +94,7 @@ best existing estimate of real performance.
 | Source | Leaky `coinsvision/...nqdbs` v5 | **`jordancoinvision/coin-vision` v5 "Real Data"** (1,006 originals) |
 | Split | Random over augmented copies | **Grouped split by source photo** (and near-duplicate cluster), stratified by class, ~70/15/15. The original test split (37 images) is too small to trust. |
 | Augmentation | Baked into the dataset (×3) | **Online only** (Ultralytics train-time aug). The dataset stays raw. |
-| Preprocessing | Stretch to 640×640 (distorts coins into ellipses) | Export without resize where possible; the model letterboxes |
+| Preprocessing | Stretch to 640×640 (distorts coins into ellipses) | ✅ coin-vision v5 exports at **full resolution** (mostly 3024×4032 phone photos, no stretch); the model letterboxes |
 | License | CC BY 4.0 | Attribute in README + dataset card |
 | Storage | Committed to git | **HF Hub dataset repo**, versioned by revision; `jcd data pull` + checksum |
 | Secrets | API key hardcoded in notebook (leaked) | `ROBOFLOW_API_KEY` from env / `.env` (gitignored); gitleaks in pre-commit + CI |
@@ -115,9 +115,26 @@ image.
 Also checked: label sanity (out-of-range class, out-of-bounds/zero-size/duplicate boxes, malformed or
 missing files: **0 issues** in v1), class balance per split, objects-per-image histogram, image sizes.
 
-Limitation: pHash misses *semantically* near-duplicate burst shots (same scene, slightly moved). If
-the coin-vision audit suggests these exist, add an embedding-based pass (e.g. DINOv2 cosine) as a
-third signal.
+**coin-vision v5 (the v2 training data)**, from `reports/data/coin-vision-v5-{raw,grouped}/`:
+
+| | Roboflow's split | `jcd data split` |
+|---|---|---|
+| images (train/valid/test) | 840 / 129 / **37** | **680 / 162 / 164** |
+| eval images leaked from train | 1 / 166 | **0 / 326** |
+| 50-dinar instances in test | **4** | 38 |
+| per-class instances in valid / test | 13–42 | **34–39** |
+
+- 995 source groups from 1,006 images. All 11 pHash pairs (≤ 6 bits, including one at exactly 6)
+  were visually confirmed duplicate uploads, which validates the threshold on a second dataset.
+- 0 real label issues. 38 boxes overshot the edge by ≤ 5e-5 (float noise), so the tolerance is
+  1e-3 and boxes are clipped when the split is written. 1 image is background-only.
+- No EXIF/GPS metadata in any image (checked before publishing).
+- Published: [`albarashehadeh/jordan-currency-detection@v1.0`](https://huggingface.co/datasets/albarashehadeh/jordan-currency-detection).
+  Version tags are immutable (`jcd data push` refuses to move a tag).
+
+Limitation: pHash misses *semantically* near-duplicate burst shots (same scene, slightly moved).
+coin-vision's largest group is 2 images and the confirmed pairs were exact re-uploads, so this
+looks minor. An embedding pass (e.g. DINOv2 cosine) remains an option if eval results look suspicious.
 
 ### 4.4 Honest v1 baseline
 v1 trained on augmented copies of almost every source photo, so **no re-split of this data can
@@ -315,7 +332,7 @@ Code releases and model releases are decoupled. The Space pins `MODEL_REVISION`.
 |---|---|---|
 | **0. Design** ✅ (this doc) | SYSTEM_DESIGN.md, decisions agreed | User sign-off |
 | **1. Foundation** ✅ | Repo scaffold, uv/pyproject, ruff/mypy/pytest, pre-commit, CI skeleton, README, LICENSE, `jcd` catalog + counting core with tests | CI green; `jcd --help` works |
-| **2. Data** | `jcd data pull/audit/split` from coin-vision v5, near-dup clustering, grouped split, dataset on HF Hub, audit report, v1 baseline re-eval | Data versioned; split leakage = 0 |
+| **2. Data** ✅ | `jcd data pull/audit/split/push/fetch` from coin-vision v5, near-dup clustering, grouped split, dataset on HF Hub, audit report, v1 baseline re-eval | Data versioned; split leakage = 0 |
 | **3. Inference core** | Detector protocol, Ultralytics + ONNX backends, image counter, TrackRegistry, renderer; v1 `model.pt` as interim model | Unit + golden-image tests pass; bugs from §6 fixed |
 | **4. Training & eval** | `jcd train/evaluate/export/release`, MLflow, Colab runner notebook, experiment table, model card | New model passes §3 gates; published to HF Hub |
 | **5. Serving** | FastAPI routes, Gradio UI (image/video/webcam), settings, logging, limits | API tests pass; latency measured vs N1 |
