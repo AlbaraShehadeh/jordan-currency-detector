@@ -4,12 +4,16 @@ from __future__ import annotations
 
 from collections import Counter
 from pathlib import Path
-from typing import Annotated
+from typing import TYPE_CHECKING, Annotated
 
 import typer
 
 from jcd import __version__
 from jcd.catalog import Catalog
+
+if TYPE_CHECKING:  # heavy modules are imported lazily inside commands
+    from jcd.settings import DataConfig as DataConfigT
+    from jcd.settings import HubConfig as HubConfigT
 
 app = typer.Typer(
     name="jcd",
@@ -176,3 +180,73 @@ def data_split(
     if lk.eval_images_leaked:
         typer.echo("LEAKAGE remains after split", err=True)
         raise typer.Exit(1)
+
+
+def _hub_config(config: Path) -> tuple[DataConfigT, HubConfigT]:
+    from jcd.settings import DataConfig
+
+    cfg = DataConfig.from_yaml(config)
+    if cfg.hub is None:
+        typer.echo(f"no `hub:` section in {config}", err=True)
+        raise typer.Exit(2)
+    return cfg, cfg.hub
+
+
+@data_app.command("push")
+def data_push(
+    config: DataConfigOption = DEFAULT_DATA_CONFIG, catalog: CatalogOption = None
+) -> None:
+    """Upload the processed dataset (+ dataset card) to the Hugging Face Hub and tag it.
+    Re-audits first and refuses to push if any leakage is found."""
+    from jcd.data.audit import audit_dataset
+    from jcd.data.dataset import YoloDataset
+    from jcd.data.grouping import group_dataset
+    from jcd.data.hub import push_dataset
+    from jcd.settings import Settings
+
+    cfg, hub = _hub_config(config)
+    token = Settings().hf_token
+    if token is None:
+        typer.echo("HF_TOKEN is not set (add it to .env; see .env.example)", err=True)
+        raise typer.Exit(2)
+    ds = YoloDataset.load(cfg.processed_dir)
+    report = audit_dataset(
+        ds, _load(catalog), grouping=group_dataset(ds, threshold=cfg.phash_threshold)
+    )
+    if report.leakage.eval_images_leaked:
+        typer.echo("refusing to push: processed dataset has train->eval leakage", err=True)
+        raise typer.Exit(1)
+    try:
+        url = push_dataset(
+            cfg.processed_dir,
+            report,
+            cfg.raw_dir,
+            hub.repo_id,
+            tag=hub.tag,
+            private=hub.private,
+            token=token.get_secret_value(),
+        )
+    except ValueError as exc:
+        typer.echo(f"error: {exc}", err=True)
+        raise typer.Exit(1) from None
+    typer.echo(f"Pushed {hub.repo_id}@{hub.tag}: {url}")
+
+
+@data_app.command("fetch")
+def data_fetch(
+    config: DataConfigOption = DEFAULT_DATA_CONFIG,
+    dest: Annotated[Path | None, typer.Option(help="Target dir [processed_dir].")] = None,
+) -> None:
+    """Download the pinned dataset version from the Hugging Face Hub."""
+    from jcd.data.hub import fetch_dataset
+    from jcd.settings import Settings
+
+    cfg, hub = _hub_config(config)
+    token = Settings().hf_token
+    path = fetch_dataset(
+        hub.repo_id,
+        hub.tag,
+        dest or cfg.processed_dir,
+        token=token.get_secret_value() if token else None,
+    )
+    typer.echo(f"Fetched {hub.repo_id}@{hub.tag} -> {path}")

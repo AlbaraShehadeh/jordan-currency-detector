@@ -12,7 +12,9 @@ from jcd.catalog import Catalog
 from jcd.data.dataset import SPLITS, LabelParseError, YoloBox, YoloDataset, parse_label_file
 from jcd.data.grouping import Grouping, group_dataset
 
-_EPS = 1e-6
+# Roboflow exports overshoot the image edge by float noise (coin-vision v5: max 5e-5), which is
+# not a labeling error. 1e-3 of the image (~4 px at 4032 px) separates noise from real issues.
+_EPS = 1e-3
 MAX_LISTED_ISSUES = 50
 
 

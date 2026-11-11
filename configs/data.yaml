@@ -15,6 +15,13 @@ split:
   ratios: { train: 0.70, valid: 0.15, test: 0.15 }
   seed: 42
 
+# Versioned copy of processed_dir on the Hugging Face Hub (`jcd data push` / `jcd data fetch`).
+# Bump `tag` whenever the processed data changes; training configs pin a tag.
+hub:
+  repo_id: albarashehadeh/jordan-currency-detection
+  tag: v1.0
+  private: false
+
 # Flip-invariant pHash distance (bits of 64) at or under which two images are the same photo.
 # Calibrated on the v1 dataset: <=6 had no false matches in a visual sample; 8-10 mostly false.
 phash_threshold: 6

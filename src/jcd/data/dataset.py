@@ -35,6 +35,18 @@ class YoloBox:
     w: float
     h: float
 
+    def clipped(self) -> YoloBox | None:
+        """The box clipped to the image ([0, 1]); None if nothing remains."""
+        lo_x, hi_x = self.xc - self.w / 2, self.xc + self.w / 2
+        lo_y, hi_y = self.yc - self.h / 2, self.yc + self.h / 2
+        if lo_x >= 0 and lo_y >= 0 and hi_x <= 1 and hi_y <= 1:
+            return self  # untouched: avoid float round-trip drift
+        x1, x2 = max(0.0, lo_x), min(1.0, hi_x)
+        y1, y2 = max(0.0, lo_y), min(1.0, hi_y)
+        if x2 <= x1 or y2 <= y1:
+            return None
+        return YoloBox(self.cls, (x1 + x2) / 2, (y1 + y2) / 2, x2 - x1, y2 - y1)
+
 
 @dataclass(frozen=True, slots=True)
 class ImageItem:

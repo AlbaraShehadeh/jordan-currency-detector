@@ -124,7 +124,9 @@ def materialize_split(
         dst = img_dir / item.path.name
         _place(item.path, dst)
         boxes = [
-            YoloBox(remap[b.cls], b.xc, b.yc, b.w, b.h) for b in parse_label_file(item.label_path)
+            YoloBox(remap[c.cls], c.xc, c.yc, c.w, c.h)
+            for b in parse_label_file(item.label_path)
+            if (c := b.clipped()) is not None  # clip float overshoot at image edges
         ]
         (lbl_dir / f"{item.path.stem}.txt").write_text(format_label_rows(boxes), encoding="utf-8")
         rows.append(

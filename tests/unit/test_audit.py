@@ -37,6 +37,7 @@ def test_label_issues(tmp_path: Path, catalog: Catalog) -> None:
         tmp_path / "ds",
         [
             Img("train", "oob", 1, labels=["0 0.95 0.5 0.2 0.2"]),
+            Img("train", "float_noise", 7, labels=["0 0.90002 0.5 0.2 0.2"]),  # 1.00002: fine
             Img("train", "badcls", 2, labels=["7 0.5 0.5 0.2 0.2"]),
             Img("train", "zero", 3, labels=["0 0.5 0.5 0.0 0.2"]),
             Img("train", "dup", 4, labels=["0 0.5 0.5 0.2 0.2", "0 0.5 0.5 0.2 0.2"]),

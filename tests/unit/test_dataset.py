@@ -67,6 +67,17 @@ def test_parse_and_format_labels_roundtrip(tmp_path: Path) -> None:
     assert parse_label_file(tmp_path / "missing.txt") == []
 
 
+def test_clipped() -> None:
+    inside = YoloBox(0, 0.5, 0.5, 0.2, 0.2)
+    assert inside.clipped() == inside
+    edge = YoloBox(1, 0.95, 0.5, 0.2, 0.2).clipped()  # x from 0.85..1.05 -> 0.85..1.0
+    assert edge is not None
+    assert edge.cls == 1
+    assert edge.xc == pytest.approx(0.925)
+    assert edge.w == pytest.approx(0.15)
+    assert YoloBox(0, 1.2, 0.5, 0.2, 0.2).clipped() is None
+
+
 @pytest.mark.parametrize("line", ["0 0.5 0.5 0.2", "a 0.5 0.5 0.2 0.2", "0 x 0.5 0.2 0.2"])
 def test_parse_rejects_malformed_lines(tmp_path: Path, line: str) -> None:
     p = tmp_path / "l.txt"

@@ -42,12 +42,20 @@ class SplitConfig(BaseModel):
         return v
 
 
+class HubConfig(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    repo_id: str = Field(pattern=r"^[\w.-]+/[\w.-]+$")
+    tag: str = Field(pattern=r"^v\d+\.\d+(\.\d+)?$")
+    private: bool = False
+
+
 class DataConfig(BaseModel):
     model_config = ConfigDict(extra="forbid")
     source: SourceConfig
     raw_dir: Path
     processed_dir: Path
     split: SplitConfig = SplitConfig()
+    hub: HubConfig | None = None
     phash_threshold: int = Field(DEFAULT_PHASH_THRESHOLD, ge=0, le=64)
 
     @classmethod
