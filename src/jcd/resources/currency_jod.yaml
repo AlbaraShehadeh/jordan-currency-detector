@@ -1,0 +1,63 @@
+# Jordanian Dinar (JOD) denomination catalog: single source of truth for class -> value.
+# 1 dinar = 100 piastres (qirsh) = 1000 fils.
+#
+# - `id` is the canonical name used everywhere in this codebase.
+# - `aliases` are raw class names seen in datasets/models. Matching is case-insensitive and
+#   treats "/", "⁄" (U+2044 fraction slash), "_" and whitespace as "-", so:
+#     coinsvision/jordan-coins-detection-nqdbs  ->  "1-2-dinar", "5-Piastres"
+#     jordancoinvision/coin-vision              ->  "1⁄2-dinar"  (fraction slash)
+#   all resolve without extra entries.
+# - Values are quoted so they parse as exact decimals, never floats.
+currency: JOD
+denominations:
+  - id: 5-piastres
+    label: 5 Piastres
+    value: "0.05"
+    kind: coin
+
+  - id: 10-piastres
+    label: 10 Piastres
+    value: "0.10"
+    kind: coin
+
+  - id: quarter-dinar
+    label: ¼ Dinar
+    value: "0.25"
+    kind: coin
+    aliases: ["1-4-dinar"]
+
+  - id: half-dinar
+    label: ½ Dinar
+    value: "0.50"
+    kind: coin
+    aliases: ["1-2-dinar"]
+
+  # NOTE: 1 JOD exists as both a coin and a banknote; the dataset class covers the coin.
+  - id: 1-dinar
+    label: 1 Dinar
+    value: "1.00"
+    kind: coin
+
+  - id: 5-dinar
+    label: 5 Dinars
+    value: "5.00"
+    kind: note
+    aliases: ["5-dinars"]
+
+  - id: 10-dinar
+    label: 10 Dinars
+    value: "10.00"
+    kind: note
+    aliases: ["10-dinars"]
+
+  - id: 20-dinar
+    label: 20 Dinars
+    value: "20.00"
+    kind: note
+    aliases: ["20-dinars"]
+
+  - id: 50-dinar
+    label: 50 Dinars
+    value: "50.00"
+    kind: note
+    aliases: ["50-dinars"]

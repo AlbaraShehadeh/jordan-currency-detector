@@ -1,0 +1,42 @@
+# --- secrets
+.env
+.env.*
+!.env.example
+
+# --- python / tooling
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+dist/
+build/
+*.egg-info/
+
+# --- ML artifacts: never committed (data & weights live on Hugging Face Hub)
+data/
+datasets/
+runs/
+mlruns/
+outputs/
+artifacts/
+*.pt
+*.pth
+*.onnx
+*.engine
+*.tflite
+*.mp4
+*.avi
+*.mov
+
+# --- notebooks
+.ipynb_checkpoints/
+
+# --- OS / editors
+.DS_Store
+.idea/
+.vscode/
