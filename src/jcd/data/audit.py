@@ -102,7 +102,7 @@ class AuditReport(BaseModel):
             "",
             *(f"- `{i.image}`: {i.issue}" for i in self.label_issues),
         ]
-        return "\n".join(lines) + "\n"
+        return "\n".join(lines).rstrip("\n") + "\n"
 
 
 def _box_issues(box: YoloBox, n_classes: int) -> list[str]:
@@ -209,6 +209,6 @@ def audit_dataset(
 def write_report(report: AuditReport, out_dir: Path) -> tuple[Path, Path]:
     out_dir.mkdir(parents=True, exist_ok=True)
     js, md = out_dir / "audit.json", out_dir / "audit.md"
-    js.write_text(report.model_dump_json(indent=2), encoding="utf-8")
+    js.write_text(report.model_dump_json(indent=2) + "\n", encoding="utf-8")
     md.write_text(report.to_markdown(), encoding="utf-8")
     return js, md

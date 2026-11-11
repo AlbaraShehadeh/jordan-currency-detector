@@ -1,10 +1,10 @@
 """Read YOLO-format datasets (Roboflow / Ultralytics layout).
 
-    root/
-      data.yaml            # names: [...]  (list or {idx: name})
-      train/images/*.jpg   train/labels/*.txt
-      valid/images/...     (or val/)
-      test/images/...
+root/
+  data.yaml            # names: [...]  (list or {idx: name})
+  train/images/*.jpg   train/labels/*.txt
+  valid/images/...     (or val/)
+  test/images/...
 """
 
 from __future__ import annotations

@@ -5,7 +5,7 @@ Two complementary signals (calibrated on the v1 dataset, see docs/SYSTEM_DESIGN.
 * **Roboflow source id**: all exported/augmented copies of one upload share it. Catches
   augmented copies that pHash cannot (rotation + crop + hue push them to a median of 18 bits).
 * **Flip-invariant pHash <= threshold**: catches the same photo re-uploaded under another name
-  (incl. mirrored). At <= 6 bits, sampled matches were all true duplicates; at 8–10 bits most
+  (incl. mirrored). At <= 6 bits, sampled matches were all true duplicates; at 8-10 bits most
   matches were different scenes.
 """
 
