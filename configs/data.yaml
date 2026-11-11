@@ -1,0 +1,20 @@
+# Dataset pipeline config: `jcd data pull` -> `jcd data audit` -> `jcd data split`.
+# Paths are relative to the repo root; data/ is gitignored.
+
+source:
+  # Original, un-augmented photos (see docs/SYSTEM_DESIGN.md §4.1).
+  workspace: jordancoinvision
+  project: coin-vision
+  version: 5 # "Real Data": 1,006 images, no augmentation
+  format: yolov8
+
+raw_dir: data/raw/coin-vision-v5
+processed_dir: data/processed/coin-vision-v5-grouped
+
+split:
+  ratios: { train: 0.70, valid: 0.15, test: 0.15 }
+  seed: 42
+
+# Flip-invariant pHash distance (bits of 64) at or under which two images are the same photo.
+# Calibrated on the v1 dataset: <=6 had no false matches in a visual sample; 8-10 mostly false.
+phash_threshold: 6

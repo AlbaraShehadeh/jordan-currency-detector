@@ -6,7 +6,7 @@
 # --- python / tooling
 __pycache__/
 *.py[cod]
-.venv/
+/.venv
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
@@ -18,12 +18,14 @@ build/
 *.egg-info/
 
 # --- ML artifacts: never committed (data & weights live on Hugging Face Hub)
-data/
-datasets/
-runs/
-mlruns/
-outputs/
-artifacts/
+# Anchored to the repo root: an unanchored `data/` would also hide src/jcd/data/ and reports/data/.
+# No trailing slash so the iCloud-workaround symlinks (data -> data.nosync) are matched too.
+/data
+/datasets
+/runs
+/mlruns
+/outputs
+/artifacts
 *.pt
 *.pth
 *.onnx
@@ -40,3 +42,6 @@ artifacts/
 .DS_Store
 .idea/
 .vscode/
+
+# --- iCloud: Documents/ is synced; *.nosync dirs are excluded (.venv and data are symlinks to them)
+*.nosync

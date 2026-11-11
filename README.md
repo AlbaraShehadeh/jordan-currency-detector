@@ -75,7 +75,7 @@ notebooks/        exploration only; pipelines run via the `jcd` CLI
 
 - [x] **0. Design**: [system design](docs/SYSTEM_DESIGN.md)
 - [x] **1. Foundation**: repo, tooling, CI, core catalog and counting logic with tests
-- [ ] **2. Data**: pull originals, near-duplicate audit, grouped re-split, version on HF Hub
+- [~] **2. Data**: ✅ audit + leakage-free grouped split ([v1 audit](reports/data/v1-coinsvision-nqdbs-v5/audit.md)) · ⏳ pull coin-vision originals, version on HF Hub
 - [ ] **3. Inference core**: detector protocol, ONNX and Ultralytics backends, video pipeline
 - [ ] **4. Training & evaluation**: reproducible training, counting/value metrics, model card
 - [ ] **5. Serving**: FastAPI + Gradio UI

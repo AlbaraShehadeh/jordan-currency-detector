@@ -1,0 +1,117 @@
+{
+  "root": "../Jordan-Coin-Detector-YOLOv8-based-Object-Detection-and-Counting/Jordan-Coins-Detection-4",
+  "raw_class_names": [
+    "1-2-dinar",
+    "1-4-dinar",
+    "1-dinar",
+    "10-Piastres",
+    "10-dinar",
+    "20-dinar",
+    "5-Piastres",
+    "5-dinar",
+    "50-dinar"
+  ],
+  "class_order": [
+    "5-piastres",
+    "10-piastres",
+    "quarter-dinar",
+    "half-dinar",
+    "1-dinar",
+    "5-dinar",
+    "10-dinar",
+    "20-dinar",
+    "50-dinar"
+  ],
+  "class_name_mapping": {
+    "1-2-dinar": "half-dinar",
+    "1-4-dinar": "quarter-dinar",
+    "1-dinar": "1-dinar",
+    "10-Piastres": "10-piastres",
+    "10-dinar": "10-dinar",
+    "20-dinar": "20-dinar",
+    "5-Piastres": "5-piastres",
+    "5-dinar": "5-dinar",
+    "50-dinar": "50-dinar"
+  },
+  "splits": {
+    "train": {
+      "images": 2069,
+      "boxes": 4790,
+      "empty_images": 0,
+      "class_counts": {
+        "5-piastres": 576,
+        "10-piastres": 540,
+        "quarter-dinar": 507,
+        "half-dinar": 523,
+        "1-dinar": 539,
+        "5-dinar": 548,
+        "10-dinar": 492,
+        "20-dinar": 516,
+        "50-dinar": 549
+      }
+    },
+    "valid": {
+      "images": 237,
+      "boxes": 599,
+      "empty_images": 0,
+      "class_counts": {
+        "5-piastres": 74,
+        "10-piastres": 62,
+        "quarter-dinar": 75,
+        "half-dinar": 63,
+        "1-dinar": 75,
+        "5-dinar": 57,
+        "10-dinar": 64,
+        "20-dinar": 54,
+        "50-dinar": 75
+      }
+    },
+    "test": {
+      "images": 214,
+      "boxes": 529,
+      "empty_images": 0,
+      "class_counts": {
+        "5-piastres": 60,
+        "10-piastres": 67,
+        "quarter-dinar": 65,
+        "half-dinar": 64,
+        "1-dinar": 57,
+        "5-dinar": 57,
+        "10-dinar": 51,
+        "20-dinar": 45,
+        "50-dinar": 63
+      }
+    }
+  },
+  "instances_per_image": {
+    "1": 1258,
+    "2": 329,
+    "3": 350,
+    "4": 316,
+    "5": 125,
+    "6": 58,
+    "7": 27,
+    "8": 11,
+    "9": 39,
+    "10": 3,
+    "14": 3,
+    "15": 1
+  },
+  "image_sizes": {
+    "640x640": 2520
+  },
+  "n_label_issues": 0,
+  "label_issues": [],
+  "leakage": {
+    "method": "Roboflow source id + flip-invariant pHash ≤ 6 bits",
+    "n_groups": 953,
+    "largest_group": 6,
+    "groups_spanning_splits": 342,
+    "eval_images": 451,
+    "eval_images_leaked": 399,
+    "leaked_by_split": {
+      "valid": 213,
+      "test": 186
+    }
+  }
+}

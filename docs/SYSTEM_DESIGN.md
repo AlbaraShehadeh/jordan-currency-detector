@@ -99,16 +99,33 @@ best existing estimate of real performance.
 | Storage | Committed to git | **HF Hub dataset repo**, versioned by revision; `jcd data pull` + checksum |
 | Secrets | API key hardcoded in notebook (leaked) | `ROBOFLOW_API_KEY` from env / `.env` (gitignored); gitleaks in pre-commit + CI |
 
-### 4.3 Data audit tasks (Phase 2, before training)
-1. pHash near-duplicate clustering within the 1,006 originals (burst shots from one session), so the
-   split groups whole clusters.
-2. Class balance + instances-per-image histogram (dense scenes matter for counting).
-3. Label sanity: zero-area boxes, out-of-bounds, duplicate boxes.
-4. Coins vs notes failure modes: coin faces (heads/tails) and notes (front/back, folded, partial).
-5. Re-evaluate the v1 `model.pt` on the new test split for an honest baseline. Caveat: v1 saw most
-   source photos in training, so even this is optimistic. The in-the-wild set (§12) is the true check.
+### 4.3 Data audit & leakage-free split ✅ implemented (`jcd data audit`, `jcd data split`)
+**Source groups** (images that must stay in one split) are the union of two signals:
 
-### 4.4 Domain catalog (single source of truth) ✅ implemented
+| Signal | Catches | Evidence (v1 dataset, 2,520 imgs) |
+|---|---|---|
+| Roboflow source id (`<name>.rf.<hash>` → `<name>`) | Augmented copies of one upload | pHash can't: rotate+crop+hue put same-photo pairs at a **median of 18 bits**, overlapping unrelated photos. Only 15 % recall at 8 bits |
+| Flip-invariant pHash ≤ **6** bits (symmetric: min over flips of either image) | The same photo re-uploaded under another name, incl. mirrored | 16 cross-name pairs ≤ 4 bits, all true duplicates (one crossed train/valid). At 8–10 bits most sampled matches were different scenes |
+
+Results: `reports/data/v1-coinsvision-nqdbs-v5/` reproduces the **88.5 % (399/451)** leak
+independently (953 groups). After `jcd data split`, the leak drops to **0 / 793**, every class lands at
+~71/14/15, and the split is deterministic per seed. `manifest.csv` records split, group and sha256 per
+image.
+
+Also checked: label sanity (out-of-range class, out-of-bounds/zero-size/duplicate boxes, malformed or
+missing files: **0 issues** in v1), class balance per split, objects-per-image histogram, image sizes.
+
+Limitation: pHash misses *semantically* near-duplicate burst shots (same scene, slightly moved). If
+the coin-vision audit suggests these exist, add an embedding-based pass (e.g. DINOv2 cosine) as a
+third signal.
+
+### 4.4 Honest v1 baseline
+v1 trained on augmented copies of almost every source photo, so **no re-split of this data can
+fairly evaluate it**. Only the **52 v1 val/test images that never leaked** are unseen by the v1
+model. They give a small but honest baseline (Phase 4). The in-the-wild set (§12) is the real check
+for both v1 and v2.
+
+### 4.5 Domain catalog (single source of truth) ✅ implemented
 `src/jcd/resources/currency_jod.yaml`, loaded by `jcd.catalog.Catalog`:
 - Canonical ids: `5-piastres`, `10-piastres`, `quarter-dinar`, `half-dinar`, `1-dinar`, `5-dinar`,
   `10-dinar`, `20-dinar`, `50-dinar`.

@@ -1,0 +1,117 @@
+{
+  "root": "data/processed/v1-nqdbs-v5-grouped",
+  "raw_class_names": [
+    "5-piastres",
+    "10-piastres",
+    "quarter-dinar",
+    "half-dinar",
+    "1-dinar",
+    "5-dinar",
+    "10-dinar",
+    "20-dinar",
+    "50-dinar"
+  ],
+  "class_order": [
+    "5-piastres",
+    "10-piastres",
+    "quarter-dinar",
+    "half-dinar",
+    "1-dinar",
+    "5-dinar",
+    "10-dinar",
+    "20-dinar",
+    "50-dinar"
+  ],
+  "class_name_mapping": {
+    "5-piastres": "5-piastres",
+    "10-piastres": "10-piastres",
+    "quarter-dinar": "quarter-dinar",
+    "half-dinar": "half-dinar",
+    "1-dinar": "1-dinar",
+    "5-dinar": "5-dinar",
+    "10-dinar": "10-dinar",
+    "20-dinar": "20-dinar",
+    "50-dinar": "50-dinar"
+  },
+  "splits": {
+    "train": {
+      "images": 1727,
+      "boxes": 4223,
+      "empty_images": 0,
+      "class_counts": {
+        "5-piastres": 506,
+        "10-piastres": 478,
+        "quarter-dinar": 462,
+        "half-dinar": 464,
+        "1-dinar": 479,
+        "5-dinar": 472,
+        "10-dinar": 433,
+        "20-dinar": 439,
+        "50-dinar": 490
+      }
+    },
+    "valid": {
+      "images": 407,
+      "boxes": 825,
+      "empty_images": 0,
+      "class_counts": {
+        "5-piastres": 99,
+        "10-piastres": 92,
+        "quarter-dinar": 90,
+        "half-dinar": 91,
+        "1-dinar": 94,
+        "5-dinar": 92,
+        "10-dinar": 85,
+        "20-dinar": 86,
+        "50-dinar": 96
+      }
+    },
+    "test": {
+      "images": 386,
+      "boxes": 870,
+      "empty_images": 0,
+      "class_counts": {
+        "5-piastres": 105,
+        "10-piastres": 99,
+        "quarter-dinar": 95,
+        "half-dinar": 95,
+        "1-dinar": 98,
+        "5-dinar": 98,
+        "10-dinar": 89,
+        "20-dinar": 90,
+        "50-dinar": 101
+      }
+    }
+  },
+  "instances_per_image": {
+    "1": 1258,
+    "2": 329,
+    "3": 350,
+    "4": 316,
+    "5": 125,
+    "6": 58,
+    "7": 27,
+    "8": 11,
+    "9": 39,
+    "10": 3,
+    "14": 3,
+    "15": 1
+  },
+  "image_sizes": {
+    "640x640": 2520
+  },
+  "n_label_issues": 0,
+  "label_issues": [],
+  "leakage": {
+    "method": "Roboflow source id + flip-invariant pHash ≤ 6 bits",
+    "n_groups": 953,
+    "largest_group": 6,
+    "groups_spanning_splits": 0,
+    "eval_images": 793,
+    "eval_images_leaked": 0,
+    "leaked_by_split": {
+      "valid": 0,
+      "test": 0
+    }
+  }
+}
